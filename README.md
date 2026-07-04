@@ -1,84 +1,211 @@
 # Análisis Comparativo de Bacterias Asociadas a Resistencia Antimicrobiana e Infecciones Humanas
+
 ## Descripción del Script
-En dicho Script tendra como principal función el automatizado las multi-muestras donde se compara las características genómicas de tres bacterias patógenas de alta prioridad clínica y creciente amenaza epidemiológica: *Mycobacterium tuberculosis*, *Staphylococcus aureus* y *Pseudomonas aeruginosa*.
 
-El script procesa en bloques simultáneos los genomas en formato .fna de secuencias genomicas completas, utilizando una interfaz interactiva, expansión de variables, comparación en base de datos para extraer metadatos básicos de cada muestra en tiempo real, tales como:
-*Registreción de los datos basicos del usuario
-* Nombre del organismo.
-* Longitud del genoma calculada en pares de bases (**bp**).
-* identificaión de genes resistentes
-* comprobación si el gen tiene operon que vuelve que permite que la resistencia ante dicho antibiotico se de
-* identificación de genes de virulencia aqui si que no se bien uso el abrikate con base de daros vdbf supongo que es para genees de virulencia
+La función principal de este script en Bash es la automatización del procesamiento de múltiples muestras para comparar las características genómicas de tres bacterias patógenas de alta prioridad clínica y creciente amenaza epidemiológica:
 
-* ### Shebang utilizado
+- *Mycobacterium tuberculosis*
+- *Staphylococcus aureus*
+- *Pseudomonas aeruginosa*
+
+El script procesa de forma simultánea y en bloques los genomas en formato **.fna** (secuencias genómicas completas). Mediante una interfaz interactiva, expansión de variables y consultas en bases de datos locales, extrae metadatos básicos de cada muestra en tiempo real, tales como:
+
+- Registro de datos básicos del usuario.
+- Nombre del organismo.
+- Longitud del genoma calculada en pares de bases (bp).
+- Identificación de genes de resistencia.
+- Comprobación de operones o regiones promotoras que activen o permitan la expresión de dicha resistencia ante el antibiótico.
+- Identificación de genes de virulencia mediante **Abricate** utilizando la base de datos **VFDB (Virulence Factor Database)**.
+
+---
+
+## Información General
+
+| Campo | Información |
+|--------|-------------|
+| **Autor** | Tiare Garcia Prat |
+| **Curso** | Bioinformática |
+| **Lenguaje** | Bash |
+| **Shebang** | `#!/bin/bash` |
+
+---
+
+## Requisitos Previos
+
+### Sistema
+
+- Bash 4.0 o superior.
+- Sistema operativo Linux.
+
+### Dependencias Externas
+
+Todas las dependencias deben encontrarse disponibles dentro del proyecto para el correcto funcionamiento del pipeline.
+
+#### Abricate
+
+- Instalar mediante Conda.
+- Actualizar la base de datos **VFDB**.
+
+#### Bakta
+
+- Instalar mediante Conda.
+- Se recomienda descargar la base de datos completa.
+
+#### NCBI Entrez Direct (EDirect)
+
+En caso de no utilizar la base de datos local de Bakta, este paquete proporciona la utilidad **efetch** para consultar secuencias directamente desde NCBI.
+
+---
+
+## Instalación y Configuración
+
+Ejecutar los siguientes comandos:
+
 ```bash
-#!/bin/bash
-
-##Información General
-* Autor: Tiare Garcia Prat
-* Curso: Bioinformática
-
-### Requisitos Previos
-* Versión de Bash: Bash 4.0 o superior
-* Sistema Operativo: Entorno Linux
-####Dependencias Externas (Software y Bases de Datos):
-
-Todos las depenencias externas que se mencione deveran ser movilizadas a carpeta Proyecto_Bioinf/Referencias, para correcto funcionamiento del scri
-Abricate: Instalar entorno por medio de conda instlar su ultima actualización con su base de datos de virulencia actualizada VDBF
-Bakta: Instalar entorno por medio de conda y si tienes la capacidad computacional su base de datos en caso que no puedas no hay problema
-NCBI Entrez Direct (EDirect): En caso de no tener la base de bakta Paquete de utilidades bioinformáticas que provee la herramienta efetch
-
-## Instalación
-Pasos que se tiene que seguir en vuestra termina, para tener el entorno configurado
+# Asignar permisos de ejecución al script
 chmod +x ~/Proyecto_Bioinf/Script/Script_Bonus.fasta
-conda activate bakta_env 
+
+# Activar el entorno de Conda
+conda activate bakta_env
+
+# Ejecutar el script
 source ~/Proyecto_Bioinf/Script/Script_Bonus.fasta
-ingresar los gen de resistencia que usted busca
-y el codigo que se tenga en el nbci
+```
 
-## Explicación de Parámetros
-El pipeline utiliza una interfaz dinámica que detecta automáticamente los archivos de entrada y solicita los siguientes parámetros:
-Entrada de Genes: Nombre de los factores de resistencia a antibióticos específicos a buscar en cada especie (ej. mecA, blaPAO, katG).
-Entrada de Códigos de Acceso: Identificadores NCBI oficiales (NCBI_ID) de las secuencias de referencia nucleotídica para realizar el alineamiento local.
+> **Nota:** Durante la ejecución el programa solicitará ingresar los genes de resistencia y los códigos de acceso correspondientes del NCBI.
 
-## Vizualización del Scrip
+---
 
-### Ejemplo de Ejecución
-(base) user@cloudshell:~$conda activate bakta_env 
+## Parámetros de Entrada
+
+El pipeline funciona mediante una interfaz interactiva.
+
+### Genes de resistencia
+
+El usuario deberá ingresar los genes de resistencia que desea buscar, por ejemplo:
+
+- `mecA`
+- `katG`
+- `blaPAO`
+
+### Códigos de acceso del NCBI
+
+Se solicitarán los identificadores oficiales (**NCBI_ID**) de las secuencias de referencia para realizar el alineamiento local.
+
+---
+
+## Ejemplo de Ejecución
+
+```bash
+(base) user@cloudshell:~$ conda activate bakta_env
 (bakta_env) user@cloudshell:~$ source ~/Proyecto_Bioinf/Script/Script_Bonus.fasta
-✔ ¡PATH activado
+
+✔ ¡PATH activado!
+
 ╔══════════════════════════════════════════╗
 ║          INFORMACIÓN DEL USUARIO         ║
 ╚══════════════════════════════════════════╝
-.......................
+...
+```
 
-### Entrada Esperada
-No se requiere ingresar argumentos adicionales, pues es un scrip interactivo el cual este te solicita datos para el analisis; lo unico que se requiere son las herramientas previamente descargadas y activas como vuestro genoma que usted quiene analizar en la caperpeta de  Proyecto_Bioinf/Data
+---
 
-### Salida Esperada
-El script centraliza y organiza los resultados de salida dentro de la carpeta asignada, evitando la dispersión de archivos
+## Entrada Esperada
 
-Opción 1: Reporte Comparativo Automatizado Multi-Muestra (Resultados/reporte_genes_resistencia.txt)
-Una matriz final que consolida los hallazgos de todas las bacterias analizadas simultáneamente, imprimiendo el nombre de la bacteria, la posesión del gen de resistencia, la presencia intacta o mutada del promotor y el diagnóstico predictivo final (Sensible/Resistente).
+No es necesario proporcionar argumentos mediante la línea de comandos.
 
-Opción 2: Perfiles de Virulencia Separados (Resultados/reporte_vir_[bacteria].txt)
-Archivos ordenados individualmente por cada muestra analizada, que contienen el filtrado exclusivo de los factores de virulencia identificados por Abricate cruzados contra la base de datos VDBF.
+El usuario únicamente debe:
+
+- Tener instaladas las dependencias.
+- Colocar los genomas en formato `.fna` dentro de:
+
+```
+Proyecto_Bioinf/Data/
+```
+
+---
+
+## Salida Esperada
+
+### Reporte Comparativo Automatizado Multi-Muestra
+
+Archivo:
+
+```
+Resultados/reporte_genes_resistencia.txt
+```
+
+Incluye:
+
+- Nombre de la bacteria.
+- Gen de resistencia identificado.
+- Estado del promotor (intacto o mutado).
+- Diagnóstico predictivo (Sensible o Resistente).
+
+### Perfiles de Virulencia
+
+Se genera un archivo independiente para cada bacteria:
+
+```
+Resultados/reporte_vir_[bacteria].txt
+```
+
+Estos reportes contienen únicamente los factores de virulencia detectados por **Abricate** utilizando la base de datos **VFDB**.
+
+---
 
 ## Estructura del Proyecto
-El árbol de directorios del espacio de trabajo se organiza de forma estricta bajo la siguiente jerarquía estructural para evitar la generación de archivos basura y que el scrip funcione corrctamente:
 
+```text
 Proyecto_Bioinf/
 ├── Data/
-│   ├── aeruginosa.fna       # Genoma de Pseudomonas aeruginosa
-│   ├── s_aureus.fna         # Genoma de Staphylococcus aureus
-│   └── tuberculosis.fna     # Genoma de Mycobacterium tuberculosis
+│   ├── aeruginosa.fna
+│   ├── s_aureus.fna
+│   └── tuberculosis.fna
+│
 ├── Referencias/
-│   ├── db_falsa/            # Base de datos híbrida de contingencia para Bakta
-│   └── VDBF/                # Base de datos de factores de virulencia para Abricate
+│   ├── db_falsa/
+│   └── VFDB/
+│
 ├── Resultados/
-│   ├── reporte_genes_resistencia.txt  # Tabla maestra comparativa
-│   ├── reporte_vir_aeruginosa.txt     # Factores de virulencia específicos
-│   ├── reporte_vir_s_aureus.txt       # Factores de virulencia específicos
-│   └── reporte_vir_tuberculosis.txt   # Factores de virulencia específicos
+│   ├── reporte_genes_resistencia.txt
+│   ├── reporte_vir_aeruginosa.txt
+│   ├── reporte_vir_s_aureus.txt
+│   └── reporte_vir_tuberculosis.txt
+│
 └── Script/
-    └── Script_Bonus.fasta   # Script principal del pipeline en Bash
+    └── Script_Bonus.fasta
+```
+
+---
+
+## Flujo General del Pipeline
+
+1. Activación del entorno Conda.
+2. Ejecución del script interactivo.
+3. Registro de información del usuario.
+4. Lectura automática de los archivos `.fna`.
+5. Cálculo del tamaño del genoma.
+6. Búsqueda de genes de resistencia.
+7. Evaluación de promotores u operones asociados.
+8. Identificación de factores de virulencia mediante Abricate + VFDB.
+9. Generación automática de reportes comparativos y reportes individuales.
+
+---
+
+## Tecnologías Utilizadas
+
+- Bash
+- Conda
+- Bakta
+- Abricate
+- VFDB
+- NCBI Entrez Direct (EDirect)
+
+---
+
+## Autor
+
+**Tiare Garcia Prat**
+
+Curso de **Bioinformática**.
