@@ -52,7 +52,7 @@ Proyecto_Bioinf/
 │   └── reporte_vir_tuberculosis.txt
 │
 └── Script/
-    └── Script_Bonus.fasta
+    └── Script_2.sh
 ```
 
 ---
@@ -90,7 +90,7 @@ Ejecutar los siguientes comandos:
 
 ```bash
 # Asignar permisos de ejecución al script
-chmod +x ~/Proyecto_Bioinf/Script/Script_Bonus.fasta
+chmod +x ~/Proyecto_Bioinf/Script/Script_2.sh
 
 # Activar el entorno de Conda
 conda activate bakta_env
@@ -117,8 +117,12 @@ El usuario deberá ingresar los genes de resistencia que desea buscar, por ejemp
 
 ### Códigos de acceso del NCBI
 
-Se solicitarán los identificadores oficiales (**NCBI_ID**) de las secuencias de referencia para realizar el alineamiento local.
+Se solicitarán los identificadores oficiales (**NCBI_ID**) de las secuencias de referencia para realizar el alineamiento local, por ejemplo:
 
+- `NG_049187.1`
+- `NG_047938.1`
+- `NC_000962.3`
+  
 ---
 
 ## Ejemplo de Ejecución
@@ -298,9 +302,3 @@ Estos reportes contienen únicamente los factores de virulencia detectados por *
    Enlace: [http://www.mgc.ac.cn/VFDbs/](http://www.mgc.ac.cn/VFDbs/)
 
 ---
-
-## Autor
-
-
-
-Curso de **Bioinformática**.
