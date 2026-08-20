@@ -4,7 +4,7 @@
 
 | Campo | Información |
 |--------|-------------|
-| **Autor** | Tiare Garcia Prat |
+| **Autor** | Tiare Garcia Prat / Evethsy Nuñez |
 | **Curso** | Bioinformática |
 | **Docentes** | Frank Guzmán Escudero / Manuel Ramírez Sáenz |
 | **Universidad** | Universidad Peruana de Ciencias Aplicadas (UPC) |
@@ -24,13 +24,12 @@ La función principal de este script en Bash es la automatización del procesami
 
 El script procesa de forma simultánea y en bloques los genomas en formato **.fna** (secuencias genómicas completas). Mediante una interfaz interactiva, expansión de variables y consultas en bases de datos locales, extrae metadatos básicos de cada muestra en tiempo real, tales como:
 
-- Registro de datos básicos del usuario.
-- Nombre del organismo.
-- Longitud del genoma calculada en pares de bases (bp).
-- Identificación de genes de resistencia.
-- Comprobación de operones o regiones promotoras que activen o permitan la expresión de dicha resistencia ante el antibiótico.
-- Identificación de genes de virulencia mediante **Abricate** utilizando la base de datos **VFDB (Virulence Factor Database)**.
-
+- Registro de datos básicos del usuario e identificación del entorno.
+- Perfil genómico: control de calidad, porcentaje de GC, validación de la Regla de Chargaff y anotación génica (CDS, rRNA, tRNA) mediante NCBI.
+- Detección de motivos de secuencia específicos (gen *blaZ* + promotor AMR o motivo personalizado).
+- Diagnóstico preciso de genes de resistencia y comprobación de sus regiones promotoras (-10/-35) usando Bakta o NCBI.
+- Identificación de factores de virulencia mediante **Abricate** con la base de datos **VFDB**.
+- Detección complementaria de resistencia antimicrobiana (AMR) y mutaciones mediante **Abricate** con la base de datos **CARD**.
 ---
 ## Estructura del Proyecto
 
@@ -62,16 +61,18 @@ Proyecto_Bioinf/
 ### Sistema
 
 - Bash 4.0 o superior.
-- Sistema operativo Linux.
+- Sistema operativo Linux/ WSL / Google Cloud Shell.
+- Calculadora en consola (bc) para operaciones matemáticas.
 
 ### Dependencias Externas
 
 Todas las dependencias deben encontrarse disponibles dentro del proyecto para el correcto funcionamiento del pipeline.
 
-#### Abricate
+#### Abricate & Base de Datos CARD / VFDB
 
 - Instalar mediante Conda.
-- Actualizar la base de datos **VFDB**.
+- Entorno Conda dedicado (entorno_abricate).
+- Actualizar la base de datos **VFDB (virulencia) y CARD (resistencia)**.
 
 #### Bakta
 
@@ -96,7 +97,7 @@ chmod +x ~/Proyecto_Bioinf/Script/Script_2.sh
 conda activate bakta_env
 
 # Ejecutar el script
-source ~/Proyecto_Bioinf/Script/Script_Bonus.fasta
+source ~/Proyecto_Bioinf/Script/Script_2.sh
 ```
 
 > **Nota:** Durante la ejecución el programa solicitará ingresar los genes de resistencia y los códigos de acceso correspondientes del NCBI.
@@ -127,26 +128,30 @@ Se solicitarán los identificadores oficiales (**NCBI_ID**) de las secuencias de
 
 ## Ejemplo de Ejecución
 
-A continuación se detalla una simulación de ejecución real interactiva del pipeline corriendo sobre el entorno Google Cloud Shell con las respuestas ingresadas por el usuario:
+A continuación se ejemplificara la ejecución interactiva del pipeline corriendo sobre el entorno Google Cloud Shell con las respuestas ingresadas por el usuario:
 
 ```text
-(base) user@cloudshell:~$ conda activate bakta_env
-(bakta_env) pratgarciatiare@cloudshell:~$ source ~/Proyecto_Bioinf/Script/Script_2.sh
+(base) user@cloudshell:~$ conda activate entorno_abricate
+(entorno_abricate) pratgarciatiare@cloudshell:~$ bash ~/Proyecto_Bioinf/Script/Script_2.sh
 
-✔ ¡PATH activado
+✔ ¡PATH activado!
+
+╔══════════════════════════════════════════════════════════════╗
+║       SUITE BIOINFORMÁTICA UNIFICADA - ANALIZADOR AMR        ║
+║                   Bioinformática UPC 2026                    ║
+╚══════════════════════════════════════════════════════════════╝
 
 ╔══════════════════════════════════════════╗
 ║          INFORMACIÓN DEL USUARIO         ║
 ╚══════════════════════════════════════════╝
 
-👤 Usuario         : tiare
-🖥️  Máquina         : cs-259715350871-default
-🐚 Shell           : /bin/bash
-📂 Directorio HOME : /home/pratgarciatiare
-📍 Directorio actual: /home/pratgarciatiare
-🌐 Idioma          : en_US.UTF-8
-🔢 PID del script  : 712
-📊 Estructura usada: tree /home/pratgarciatiare/Proyecto_Bioinf
+👤 Nombre del Investigador: Tiare Garcia
+🖥️  Máquina                   : cs-259715350871-default
+🐚 Shell                     : /bin/bash
+📂 Directorio HOME           : /home/pratgarciatiare
+📍 Directorio actual         : /home/pratgarciatiare
+🌐 Idioma                    : en_US.UTF-8
+🔢 PID del script            : 712
 
 ╔══════════════════════════════════════════╗
 ║          Archivos a analizar             ║
@@ -156,58 +161,54 @@ A continuación se detalla una simulación de ejecución real interactiva del pi
 -/home/pratgarciatiare/Proyecto_Bioinf/Data/tuberculosis.fna
 
 
-╔══════════════════════════════════════════╗
-║                Analisis                  ║
-╚══════════════════════════════════════════╝
-Nombre de los encabezados y su longitud
-secuencia 1:
-Encabezado: NC_002516.2 Pseudomonas aeruginosa PAO1, complete genome
-longitud total: 6264404 bp
-secuencia 2:
-Encabezado: NC_007795.1 Staphylococcus aureus subsp. aureus NCTC 8325 chromosome, complete genome
-longitud total: 2821361 bp
-secuencia 3:
-Encabezado: NC_000962.3 Mycobacterium tuberculosis H37Rv, complete genome
-longitud total: 4411532 bp
+==============================================================
+                 MENÚ DE ANÁLISIS GENÓMICO                    
+  [1] Información general, Control de Calidad, %GC y Chargaff
+  [2] Búsqueda de motivos de secuencia (blaZ / Personalizado)
+  [3] Diagnóstico preciso de gen + promotor (Bakta / NCBI)
+  [4] Identificación de factores de virulencia (Abricate / VFDB)
+  [5] Búsqueda complementaria de AMR y Mutaciones (CARD / AMRFinder)
+  [6] Salir
+==============================================================
+Elige una opción: 1
 
-
+------------------------------------------------------------
+  ANÁLISIS 1: PERFIL GENÓMICO GENERAL Y %GC
+------------------------------------------------------------
 Calificador de calidad de secuencia
-Secuencias cortas(<100 bp): 0
-Secuencias medias(100-900): 0
-Secuencias largas(>900 bp): 3
+Secuencias cortas (<100 bp): 0
+Secuencias medias (100-900 bp): 0
+Secuencias largas (>900 bp): 3
 
+Analizando muestra: /home/pratgarciatiare/Proyecto_Bioinf/Data/aeruginosa.fna
+Investigador      : Tiare Garcia
+Bacteria          : Pseudomonas aeruginosa PAO1
+Nº de contigs     : 1
+Tamaño total      : 6.26 Mb (6264404 bp)
+Nucleótidos N     : 0
+--- Anotación génica (NCBI) ---
+CDS: 5572 | rRNA: 12 | tRNA: 63
+%A = 16.7%  %T = 16.7%  Diferencia: 0%
+%G = 33.3%  %C = 33.3%  Diferencia: 0%
+%GC               : 66.60%
+Chargaff          : SÍ cumple la Regla de Chargaff → Genoma de doble cadena íntegro y bien ensamblado
 
-=========================================================================
-     Comprobando dependencias del sistema
-=========================================================================
-No se halla base de datos, script funcionará con alternativa alterna, buscando vía NCBI.
-✔ Bakta detectado correctamente.
-✔ Comprobación del entorno finalizada
+✔ Resultado acumulado guardado en /home/pratgarciatiare/Proyecto_Bioinf/Resultados/opcion1_resultado.txt
 
+Presiona [Enter] para volver al menú principal...
 
-=========================================================================
-        Tabla de condiciones del genoma analizado
-=========================================================================
-Ingresar nombre del gen de resistencia que buscas para Pseudomonas: blaPAO 
-Ingresar el código NCBI de ese gen de resistencia: NG_049187.1 
-Ingresar nombre del gen de resistencia que buscas para S. aureus: mecA 
-Ingresar el código NCBI de ese gen de resistencia: NG_047938.1 
-Ingresar nombre del gen de resistencia que buscas para Tuberculosis: katG 
-Ingresar el código NCBI de ese gen de resistencia: NC_000962.3
+==============================================================
+                 MENÚ DE ANÁLISIS GENÓMICO                    
+  [1] Información general, Control de Calidad, %GC y Chargaff
+  [2] Búsqueda de motivos de secuencia (blaZ / Personalizado)
+  [3] Diagnóstico preciso de gen + promotor (Bakta / NCBI)
+  [4] Identificación de factores de virulencia (Abricate / VFDB)
+  [5] Búsqueda complementaria de AMR y Mutaciones (CARD / AMRFinder)
+  [6] Salir
+==============================================================
+Elige una opción: 6
 
-✔ Tabla generada con éxito respuestas y diagnósticos en:
-/home/pratgarciatiare/Proyecto_Bioinf/Resultados/reporte_genes_resistencia.txt
-
-╔══════════════════════════════════════════╗
-║      FACTORES GENES DE VIRULENCIA        ║
-╚══════════════════════════════════════════╝
- Sistema Abricate detectado y listo para usar.
- Reporte de virulencia limpio generado en:
-/home/pratgarciatiare/Proyecto_Bioinf/Resultados/reporte_vir_aeruginosa.txt
- Reporte de virulencia limpio generado en:
-/home/pratgarciatiare/Proyecto_Bioinf/Resultados/reporte_vir_s_aureus.txt
- Reporte de virulencia limpio generado en:
-/home/pratgarciatiare/Proyecto_Bioinf/Resultados/reporte_vir_tuberculosis.txt
+Saliendo del analizador.
 
 ---
 ```
@@ -219,6 +220,7 @@ No es necesario proporcionar argumentos mediante la línea de comandos.
 El usuario únicamente debe:
 
 - Tener instaladas las dependencias.
+- Activar el entorno bakta antes de la corrida
 - Colocar los genomas en formato `.fna` dentro de:
 
 ```
@@ -228,6 +230,14 @@ Proyecto_Bioinf/Data/
 ---
 
 ## Salida Esperada
+- Todas las salidas se organizan automáticamente dentro del directorio Resultados/:
+  
+Campo	Información
+Opción 1	opcion1_resultado.txt — Conteo de contigs, %GC, validación de Chargaff y conteo CDS/rRNA/tRNA.
+Opción 2	opcion2_resultado.txt — Frecuencias de motivos (blaZ, promotores o secuencias personalizadas).
+Opción 3	reporte_genes_resistencia.txt — Tabla formateada con diagnóstico predictivo (Sensible/Resistente).
+Opción 4	reporte_vir_[muestra].txt — Factores de virulencia detectados mediante VFDB por muestra.
+Opción 5	reporte_amr_[muestra].txt — Determinantes AMR, % de identidad, cobertura y mecanismos (CARD).
 
 ### Reporte Comparativo Automatizado Multi-Muestra
 
