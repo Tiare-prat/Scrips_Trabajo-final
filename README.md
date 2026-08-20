@@ -232,51 +232,27 @@ Proyecto_Bioinf/Data/
 ## Salida Esperada
 - Todas las salidas se organizan automáticamente dentro del directorio Resultados/:
   
-Campo	Información
-Opción 1	opcion1_resultado.txt — Conteo de contigs, %GC, validación de Chargaff y conteo CDS/rRNA/tRNA.
-Opción 2	opcion2_resultado.txt — Frecuencias de motivos (blaZ, promotores o secuencias personalizadas).
-Opción 3	reporte_genes_resistencia.txt — Tabla formateada con diagnóstico predictivo (Sensible/Resistente).
-Opción 4	reporte_vir_[muestra].txt — Factores de virulencia detectados mediante VFDB por muestra.
-Opción 5	reporte_amr_[muestra].txt — Determinantes AMR, % de identidad, cobertura y mecanismos (CARD).
+| Campo | Información |
+|--------|-------------|
+| **Opción 1** | `opcion1_resultado.txt` — Conteo de contigs, %GC, validación de Chargaff y conteo CDS/rRNA/tRNA. |
+| **Opción 2** | `opcion2_resultado.txt` — Frecuencias de motivos (*blaZ*, promotores o secuencias personalizadas). |
+| **Opción 3** | `reporte_genes_resistencia.txt` — Tabla formateada con diagnóstico predictivo (Sensible/Resistente). |
+| **Opción 4** | `reporte_vir_[muestra].txt` — Factores de virulencia detectados mediante VFDB por muestra. |
+| **Opción 5** | `reporte_amr_[muestra].txt` — Determinantes AMR, % de identidad, cobertura y mecanismos (CARD). |
 
-### Reporte Comparativo Automatizado Multi-Muestra
 
-Archivo:
+## Flujo de ejecución
 
-```
-Resultados/reporte_genes_resistencia.txt
-```
-
-Incluye:
-
-- Nombre de la bacteria.
-- Gen de resistencia identificado.
-- Estado del promotor (intacto o mutado).
-- Diagnóstico predictivo (Sensible o Resistente).
-
-### Perfiles de Virulencia
-
-Se genera un archivo independiente para cada bacteria:
-
-```
-Resultados/reporte_vir_[bacteria].txt
-```
-
-Estos reportes contienen únicamente los factores de virulencia detectados por **Abricate** utilizando la base de datos **VFDB**.
-
----
-
-## Flujo General del Pipeline
-
-1. Activación del entorno Conda.
-2. Ejecución del script interactivo.
-3. Registro de información del usuario.
-4. Lectura automática de los archivos `.fna`.
-5. Cálculo del tamaño del genoma.
-6. Búsqueda de genes de resistencia.
-7. Evaluación de promotores u operones asociados.
-8. Identificación de factores de virulencia mediante Abricate + VFDB.
-9. Generación automática de reportes comparativos y reportes individuales.
+1. **Activación del entorno Conda.**
+2. **Ejecución del script interactivo.**
+3. **Registro de metadatos del usuario** y despliegue del menú interactivo (Opciones 1 a 6).
+4. **Procesamiento automatizado de los genomas `.fna`** según la opción seleccionada:
+   - **Opción 1:** Control de calidad de contigs, %GC, validación de la Regla de Chargaff y conteo de CDS/rRNA/tRNA vía NCBI.
+   - **Opción 2:** Conteo de motivos de secuencia (gen *blaZ*, promotores o motivos personalizados).
+   - **Opción 3:** Búsqueda de genes de resistencia y evaluación de regiones promotoras (-10/-35) mediante Bakta o NCBI.
+   - **Opción 4:** Screening de factores de virulencia mediante Abricate + VFDB.
+   - **Opción 5:** Screening de determinantes AMR y mutaciones mediante Abricate + CARD.
+5. **Generación y exportación automática de los reportes correspondientes** dentro de `Resultados/`.
 
 ---
 
@@ -287,8 +263,8 @@ Estos reportes contienen únicamente los factores de virulencia detectados por *
 - Bakta
 - Abricate
 - VFDB
-- NCBI Entrez Direct (EDirect)
-
+- Base de datos CARD (Comprehensive Antibiotic Resistance Database)
+- NCBI Entrez Direct (efetch)
 ---
 
 ## Referencias
