@@ -4,7 +4,7 @@
 
 | Campo | Información |
 |--------|-------------|
-| **Autor** | Tiare Garcia Prat / Evethsy Nuñez |
+| **Autor** | Tiare  Prat / Evethsy Nuñez |
 | **Curso** | Bioinformática |
 | **Docentes** | Frank Guzmán Escudero / Manuel Ramírez Sáenz |
 | **Universidad** | Universidad Peruana de Ciencias Aplicadas (UPC) |
